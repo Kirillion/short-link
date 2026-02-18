@@ -1,0 +1,25 @@
+services:
+
+  server:
+    image: nginx:latest
+    container_name: short_link-server
+    build: ./docker/nginx/conf.d
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./app:/var/www/short_link
+    ports:
+      - "80:80"
+
+
+  app:
+    build: ./docker/php
+    container_name: short_link-app
+    volumes:
+      - ./app:/var/www/short_link
+
+  db:
+    image: mariadb:latest
+    environment:
+     MARIADB_ROOT_PASSWORD: secret
+    ports:
+      - "3306:3306"
