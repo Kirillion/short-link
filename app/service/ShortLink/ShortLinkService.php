@@ -2,9 +2,12 @@
 
 namespace app\service\ShortLink;
 
+use app\components\CheckerWebResource\CheckerWebResource;
 use app\components\RandomStringGenerator\RandomStringGeneratorInterface;
 use app\form\ShortLink\CreateForm;
+use app\models\RedirectCounter;
 use app\models\ShortLink;
+use Yii;
 use yii\db\Exception;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -13,6 +16,7 @@ readonly class ShortLinkService
 {
     public function __construct(
         private RandomStringGeneratorInterface $randomStringGenerator,
+        private CheckerWebResource $checkerWebResource,
     )
     {
     }
@@ -28,20 +32,26 @@ readonly class ShortLinkService
      */
     public function create(CreateForm $form): void
     {
-        $shortLink = new ShortLink();
+        if ($this->checkerWebResource->check($form->url)) {
+            $shortLink = new ShortLink();
 
-        $shortLink->url = $form->url;
+            $shortLink->url = $form->url;
 
-        $shortLink->short_url = Url::base('http') . '/';
-        $shortLink->short_url .= $this->randomStringGenerator->generate(8);
+            $shortLink->short_url = Url::base('http') . '/';
+            $shortLink->short_url .= $this->randomStringGenerator->generate(8);
 
-        $shortLink->created_at = time();
+            $shortLink->created_at = time();
 
-        if ($shortLink->save()) {
-            $form->shortLink = $shortLink->short_url;
+            if ($shortLink->save()) {
+                $form->shortLink = $shortLink->short_url;
+            }
+
+            $form->addErrors($shortLink->errors);
+
+            return;
         }
 
-        $form->addErrors($shortLink->errors);
+        $form->addError('url', 'Указанные ресур недоступен');
     }
 
     /**
