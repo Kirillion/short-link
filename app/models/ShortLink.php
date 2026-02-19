@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "short_link".
@@ -12,7 +12,7 @@ use Yii;
  * @property string $short_url
  * @property int $created_at
  */
-class ShortLink extends \yii\db\ActiveRecord
+class ShortLink extends ActiveRecord
 {
 
     /**

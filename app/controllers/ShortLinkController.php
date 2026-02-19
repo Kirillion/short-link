@@ -5,7 +5,6 @@ namespace app\controllers;
 use app\form\ShortLink\CreateForm;
 use app\service\ShortLink\ShortLinkService;
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

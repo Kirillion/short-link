@@ -1,5 +1,6 @@
 <?php
 
+use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -7,10 +8,14 @@ use yii\widgets\ActiveForm;
 /** @var app\models\ShortLink $model */
 /** @var ActiveForm $form */
 
-$this->registerJsFile(
-        '@web/js/shortLinkCreate.js',
-        ['depends' => [\yii\web\JqueryAsset::class]]
-);
+try {
+    $this->registerJsFile(
+            '@web/js/shortLinkCreate.js',
+            ['depends' => [\yii\web\JqueryAsset::class]]
+    );
+} catch (InvalidConfigException $e) {
+
+}
 ?>
 
 <div class="short-link-index">
