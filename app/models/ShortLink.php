@@ -2,23 +2,25 @@
 
 namespace app\models;
 
-use yii\db\ActiveRecord;
+use Yii;
 
 /**
  * This is the model class for table "short_link".
  *
  * @property int $id
- * @property string $url
- * @property string $short_url
+ * @property string|null $url
+ * @property string|null $short_url
  * @property int $created_at
+ * @property int|null $status
+ *
+ * @property RedirectCounter[] $redirectCounters
  */
-class ShortLink extends ActiveRecord
+class ShortLink extends \yii\db\ActiveRecord
 {
-
     /**
      * {@inheritdoc}
      */
-    public static function tableName(): string
+    public static function tableName()
     {
         return 'short_link';
     }
@@ -26,11 +28,13 @@ class ShortLink extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            [['url', 'short_url', 'created_at'], 'required'],
-            [['created_at'], 'integer'],
+            [['url', 'short_url'], 'default', 'value' => null],
+            [['status'], 'default', 'value' => 1],
+            [['created_at'], 'required'],
+            [['created_at', 'status'], 'integer'],
             [['url', 'short_url'], 'string', 'max' => 2000],
         ];
     }
@@ -38,13 +42,24 @@ class ShortLink extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels(): array
+    public function attributeLabels()
     {
         return [
             'id' => 'ID',
             'url' => 'Url',
             'short_url' => 'Short Url',
             'created_at' => 'Created At',
+            'status' => 'Status',
         ];
+    }
+
+    /**
+     * Gets query for [[RedirectCounters]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRedirectCounters()
+    {
+        return $this->hasMany(RedirectCounter::class, ['short_link_id' => 'id']);
     }
 }

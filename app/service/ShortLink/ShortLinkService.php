@@ -48,18 +48,41 @@ readonly class ShortLinkService
      * Вернет ссылку для редиректа и увеличит счётчик редиректов
      *
      * @param string $shortLink
+     * @param string $ipUser
      * @return string
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException|Exception
      */
-    public function getRedirectUrl(string $shortLink): string
+    public function getRedirectUrl(string $shortLink, string $ipUser): string
     {
-        $shortLink = ShortLink::findOne(['short_url' => $shortLink]);
+        $shortLink = ShortLink::find()
+        ->with(['redirectCounters' => function ($query) use ($ipUser) {
+            $query->where(['ip' => $ipUser])
+            ->indexBy('ip');
+        }])
+        ->where([
+            'short_url' => $shortLink,
+            'status' => 1,
+        ])
+        ->one();
 
         if ($shortLink == null) {
             throw new NotFoundHttpException();
         }
 
-        //TODO: Сделать счетчик
+        if (isset($shortLink->redirectCounters[$ipUser])) {
+            $redirectCounter = $shortLink->redirectCounters[$ipUser];
+
+        } else {
+            $redirectCounter = new RedirectCounter();
+
+            $redirectCounter->ip = $ipUser;
+            $redirectCounter->link('shortLink', $shortLink);
+        }
+
+        $redirectCounter->updateCountRedirect();
+        if (!$redirectCounter->save()) {
+            Yii::error($redirectCounter);
+        }
 
         return $shortLink->url;
     }

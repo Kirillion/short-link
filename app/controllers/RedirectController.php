@@ -30,7 +30,10 @@ class RedirectController extends Controller
     public function actionIndex(): Response
     {
         return $this->redirect(
-            $this->shortLinkService->getRedirectUrl(Yii::$app->request->getAbsoluteUrl()),
+            $this->shortLinkService->getRedirectUrl(
+                Yii::$app->request->getAbsoluteUrl(),
+                Yii::$app->request->userIP,
+            ),
         );
     }
 }
