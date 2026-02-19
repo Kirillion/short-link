@@ -31,7 +31,7 @@ class ShortLink extends \yii\db\ActiveRecord
         return [
             [['url', 'short_url', 'created_at'], 'required'],
             [['created_at'], 'integer'],
-            [['url', 'short_url'], 'string', 'max' => 255],
+            [['url', 'short_url'], 'string', 'max' => 2000],
         ];
     }
 
@@ -47,5 +47,4 @@ class ShortLink extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
         ];
     }
-
 }
