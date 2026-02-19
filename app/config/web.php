@@ -37,6 +37,9 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/' => '/short-link/create',
+                'short-link/<action>' => 'short-link/<action>',
+                '<path:.*>' => 'redirect/index',
             ],
         ],
     ],

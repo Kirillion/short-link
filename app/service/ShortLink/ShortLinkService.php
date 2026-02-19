@@ -5,10 +5,20 @@ namespace app\service\ShortLink;
 use app\form\ShortLink\CreateForm;
 use app\models\ShortLink;
 use Yii;
+use yii\db\Exception;
 use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 
 class ShortLinkService
 {
+    /**
+     * Сохранит новую короткую ссылку на ресурс
+     *
+     * @param CreateForm $form
+     * @return void
+     * @throws \yii\base\Exception
+     * @throws Exception
+     */
     public function create(CreateForm $form): void
     {
         $shortLink = new ShortLink();
