@@ -6,9 +6,9 @@ use app\form\ShortLink\CreateForm;
 use app\services\ShortLink\Exceptions\InvalidUrlResourceException;
 use app\services\ShortLink\Exceptions\ResourceNotFoundException;
 use app\services\ShortLink\ShortLinkService;
+use Throwable;
 use Yii;
 use yii\db\Exception;
-use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -40,7 +40,7 @@ class ShortLinkController extends Controller
     /**
      * @throws NotFoundHttpException
      */
-    public function actionCreateAjax(): string
+    public function actionCreateAjax(): Response
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -54,24 +54,24 @@ class ShortLinkController extends Controller
 
                 Yii::$app->response->statusCode = 201;
 
-                return Json::encode([
+                return $this->asJson([
                     'data' => [
-                        'url' => $url,
+                        'short_url' => $url,
                     ],
                 ]);
 
             } catch (InvalidUrlResourceException|ResourceNotFoundException $e) {
                 Yii::$app->response->statusCode = 400;
 
-                return Json::encode([
+                return $this->asJson([
                     'error' => $e->getMessage(),
                 ]);
 
-            } catch (Exception $e) {
+            } catch (Exception| Throwable $e) {
                 Yii::$app->response->statusCode = 400;
 
-                return Json::encode([
-                    'error' => 'Возникла непредвиденная ошибка сервера.',
+                return $this->asJson([
+                    'error'=>'Возникла непредвиденная ошибка сервера.',
                 ]);
             }
         }
