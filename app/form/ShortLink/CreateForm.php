@@ -6,7 +6,6 @@ use yii\base\Model;
 
 /**
  * @property string $url
- * @property ?string $shortLink
  */
 class CreateForm extends Model
 {
