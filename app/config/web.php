@@ -10,6 +10,7 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'Short Link',
     'name' => 'Short Link',
+    'language' => 'ru-RU',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
