@@ -1,12 +1,14 @@
 <?php
 
-namespace app\service\ShortLink;
+namespace app\services\ShortLink;
 
 use app\components\CheckerWebResource\CheckerWebResource;
 use app\components\RandomStringGenerator\RandomStringGeneratorInterface;
 use app\form\ShortLink\CreateForm;
 use app\models\RedirectCounter;
 use app\models\ShortLink;
+use app\services\ShortLink\Exceptions\InvalidUrlResourceException;
+use app\services\ShortLink\Exceptions\ResourceNotFoundException;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Url;

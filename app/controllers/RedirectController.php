@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 
-use app\service\ShortLink\ShortLinkService;
+use app\services\ShortLink\ShortLinkService;
 use Yii;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -25,7 +26,7 @@ class RedirectController extends Controller
      * Редирект по короткой ссылке.
      *
      * @return Response
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException|Exception
      */
     public function actionIndex(): Response
     {
