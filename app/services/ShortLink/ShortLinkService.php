@@ -27,12 +27,12 @@ readonly class ShortLinkService
      * Сохранит новую короткую ссылку на ресурс
      *
      * @param CreateForm $form
-     * @return void
-     * @throws \yii\base\Exception
+     * @return string
      * @throws Exception
-     * @throws \Exception
+     * @throws InvalidUrlResourceException
+     * @throws ResourceNotFoundException
      */
-    public function create(CreateForm $form): void
+    public function create(CreateForm $form): string
     {
         if ($this->checkerWebResource->check($form->url)) {
             $shortLink = new ShortLink();
@@ -45,15 +45,15 @@ readonly class ShortLinkService
             $shortLink->created_at = time();
 
             if ($shortLink->save()) {
-                $form->shortLink = $shortLink->short_url;
+                return $shortLink->short_url;
             }
 
-            $form->addErrors($shortLink->errors);
-
-            return;
+            if ($shortLink->getFirstError('url')) {
+                throw new InvalidUrlResourceException();
+            }
         }
 
-        $form->addError('url', 'Указанные ресур недоступен');
+        throw new ResourceNotFoundException();
     }
 
     /**

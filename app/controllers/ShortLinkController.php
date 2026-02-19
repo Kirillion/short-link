@@ -48,17 +48,32 @@ class ShortLinkController extends Controller
 
         if ($this->request->isPost) {
             $createShortLinkForm->load($this->request->post());
-            $this->shortLinkService->create($createShortLinkForm);
 
-            Yii::$app->response->statusCode = $createShortLinkForm->errors == null ? 201 : 400;
+            try {
+                $url = $this->shortLinkService->create($createShortLinkForm);
 
-            return Json::encode([
-                'CreateForm' => [
-                    'url' => $createShortLinkForm->url,
-                    'shortLink' => $createShortLinkForm->shortLink,
-                    'errors' => $createShortLinkForm->errors,
-                ]
-            ]);
+                Yii::$app->response->statusCode = 201;
+
+                return Json::encode([
+                    'data' => [
+                        'url' => $url,
+                    ],
+                ]);
+
+            } catch (InvalidUrlResourceException|ResourceNotFoundException $e) {
+                Yii::$app->response->statusCode = 400;
+
+                return Json::encode([
+                    'error' => $e->getMessage(),
+                ]);
+
+            } catch (Exception $e) {
+                Yii::$app->response->statusCode = 400;
+
+                return Json::encode([
+                    'error' => 'Возникла непредвиденная ошибка сервера.',
+                ]);
+            }
         }
 
         throw new NotFoundHttpException();
