@@ -19,6 +19,10 @@ FLUSH PRIVILEGES;
 ```
 
 ```
+docker-compose exec app composer install
+```
+
+```
 docker-compose exec app php yii migrate --interactive=0
 ```
 
