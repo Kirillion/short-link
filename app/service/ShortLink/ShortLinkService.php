@@ -2,15 +2,21 @@
 
 namespace app\service\ShortLink;
 
+use app\components\RandomStringGenerator\RandomStringGeneratorInterface;
 use app\form\ShortLink\CreateForm;
 use app\models\ShortLink;
-use Yii;
 use yii\db\Exception;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
-class ShortLinkService
+readonly class ShortLinkService
 {
+    public function __construct(
+        private RandomStringGeneratorInterface $randomStringGenerator,
+    )
+    {
+    }
+
     /**
      * Сохранит новую короткую ссылку на ресурс
      *
@@ -18,14 +24,17 @@ class ShortLinkService
      * @return void
      * @throws \yii\base\Exception
      * @throws Exception
+     * @throws \Exception
      */
     public function create(CreateForm $form): void
     {
         $shortLink = new ShortLink();
 
         $shortLink->url = $form->url;
-        //TODO: Сделать генератор сокращенной ссылки
-        $shortLink->short_url = Url::base('http') . '/' .Yii::$app->security->generateRandomString();
+
+        $shortLink->short_url = Url::base('http') . '/';
+        $shortLink->short_url .= $this->randomStringGenerator->generate(8);
+
         $shortLink->created_at = time();
 
         if ($shortLink->save()) {

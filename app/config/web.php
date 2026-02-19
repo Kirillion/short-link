@@ -1,5 +1,8 @@
 <?php
 
+use app\components\RandomStringGenerator\RandomBytes;
+use app\components\RandomStringGenerator\RandomStringGeneratorInterface;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -42,6 +45,11 @@ $config = [
                 '<path:.*>' => 'redirect/index',
             ],
         ],
+    ],
+    'container' => [
+        'definitions' => [
+            RandomStringGeneratorInterface::class => RandomBytes::class
+        ]
     ],
     'params' => $params,
 ];
