@@ -1,5 +1,6 @@
 <?php
 
+use app\components\CheckerWebResource\CheckerWebResource;
 use app\components\RandomStringGenerator\RandomBytes;
 use app\components\RandomStringGenerator\RandomStringGeneratorInterface;
 
@@ -48,7 +49,10 @@ $config = [
     ],
     'container' => [
         'definitions' => [
-            RandomStringGeneratorInterface::class => RandomBytes::class
+            RandomStringGeneratorInterface::class => RandomBytes::class,
+            CheckerWebResource::class => [
+                'class' => CheckerWebResource::class,
+            ],
         ]
     ],
     'params' => $params,
