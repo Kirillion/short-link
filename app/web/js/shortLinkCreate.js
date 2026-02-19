@@ -3,9 +3,13 @@ const $copyBtn = $('#copy-short-link');
 const $shortUrlP = $('#short-url');
 const $qrWrapper = $('#qr-wrapper');
 const $accordionShortLink = $('#accordion-short-link')
+const $helpBlock =  $('.help-block');
 
 const collapseShortLink = new bootstrap.Collapse($('#collapse-short-link'), {toggle: false})
 let processingRequestFlag = false;
+
+$helpBlock.addClass('fs-5');
+$helpBlock.addClass('text-center');
 
 $form.on('beforeSubmit', function (e) {
     if (processingRequestFlag) {
@@ -19,22 +23,21 @@ $form.on('beforeSubmit', function (e) {
     $.ajax({
         url: $form.attr('action'),
         type: 'POST',
+        dataType: 'json',
         data: data,
         success: function (response) {
-            response = JSON.parse(response);
-
-            $shortUrlP.html(response.data.url);
+            $shortUrlP.html(response.data.short_url);
             $copyBtn.prop('disabled', false);
 
-            updateQrCode(response.data.url);
+            updateQrCode(response.data.short_url);
             $accordionShortLink.removeClass('d-none');
 
             collapseShortLink.show();
 
             endProcessingRequest();
         },
-        error: function (response) {
-
+        error: function (xhr) {
+            $helpBlock.html(xhr.responseJSON.error)
             endProcessingRequest();
         },
     });
@@ -63,7 +66,7 @@ $copyBtn.on('click', function () {
 function processingRequest() {
     processingRequestFlag = true;
 
-    $form.find('#createform-url').prop('disabled', true);
+    $form.find('[name="CreateForm[url]"]').prop('disabled', true);
     $form.find('[type="submit"]').prop('disabled', true);
 
     collapseShortLink.hide();
@@ -77,7 +80,7 @@ function processingRequest() {
 function endProcessingRequest() {
     processingRequestFlag = false;
 
-    $form.find('#createform-url').prop('disabled', false);
+    $form.find('[name="CreateForm[url]"]').prop('disabled', false);
     $form.find('[type="submit"]').prop('disabled', false);
 }
 
@@ -86,8 +89,8 @@ function updateQrCode(url) {
         text: url,
         width: 200,
         height: 200,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H // High error correction level
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H // High error correction level
     });
 }
