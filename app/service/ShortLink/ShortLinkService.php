@@ -34,4 +34,24 @@ class ShortLinkService
 
         $form->addErrors($shortLink->errors);
     }
+
+    /**
+     * Вернет ссылку для редиректа и увеличит счётчик редиректов
+     *
+     * @param string $shortLink
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function getRedirectUrl(string $shortLink): string
+    {
+        $shortLink = ShortLink::findOne(['short_url' => $shortLink]);
+
+        if ($shortLink == null) {
+            throw new NotFoundHttpException();
+        }
+
+        //TODO: Сделать счетчик
+
+        return $shortLink->url;
+    }
 }
