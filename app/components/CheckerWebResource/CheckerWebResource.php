@@ -2,6 +2,7 @@
 
 namespace app\components\CheckerWebResource;
 
+use Throwable;
 use yii\httpclient\Client;
 
 readonly class CheckerWebResource
@@ -14,15 +15,19 @@ readonly class CheckerWebResource
 
     public function check(string $url): bool
     {
-        $response = $this->client->createRequest()
-            ->setMethod('GET')
-            ->setUrl($url)
-            ->send();
+        try {
+            $response = $this->client->createRequest()
+                ->setMethod('GET')
+                ->setUrl($url)
+                ->send();
 
-        if ($response->isOk) {
-            return true;
+            if ($response->isOk) {
+                return true;
+            }
+
+            return false;
+        } catch (Throwable $exception) {
+            return false;
         }
-
-        return false;
     }
 }
