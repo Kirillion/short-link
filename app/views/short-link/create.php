@@ -49,7 +49,7 @@ try {
 
             <div class="col-1">
                 <div class="form-group">
-                    <?= Html::submitButton('Сократить', ['class' => 'btn btn-primary btn-lg']) ?>
+                    <?= Html::submitButton('ОК', ['class' => 'btn btn-primary btn-lg']) ?>
                 </div>
             </div>
 
